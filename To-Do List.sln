@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "To-Do List.API", "To-Do List.API\To-Do List.API.csproj", "{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {814B357F-04C2-47C0-B655-6880596DC32E}
+	EndGlobalSection
+EndGlobal
