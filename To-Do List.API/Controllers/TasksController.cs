@@ -23,6 +23,7 @@ namespace To_Do_List.API.Controllers
             _tasksRepository = tasksRepository;
         }
 
+        [Authorize]
         [HttpPost("tasks")]
         public async Task<IActionResult> CreateTask([FromBody]TaskDTO taskDTO)
         {
@@ -34,6 +35,7 @@ namespace To_Do_List.API.Controllers
             return Ok(task);
         }
 
+        [Authorize]
         [HttpGet("tasks")]
         public async Task<IActionResult> GetTasks()
         {
@@ -45,6 +47,7 @@ namespace To_Do_List.API.Controllers
             return Ok(tasks);
         }
 
+        [Authorize]
         [HttpDelete("tasks/{id}")]
         public async Task<IActionResult> DeleteTask(string id)
         {
@@ -57,6 +60,7 @@ namespace To_Do_List.API.Controllers
             return NotFound();
         }
 
+        [Authorize]
         [HttpPut("tasks")]
         public async Task<IActionResult> UpdateTask(string id, [FromBody] TaskDTO taskDTO)
         {
@@ -69,6 +73,7 @@ namespace To_Do_List.API.Controllers
             return BadRequest();
         }
 
+        [Authorize]
         [HttpGet("tasks/{id}")]
         public async Task<IActionResult> GetTaskById(string id)
         {

@@ -24,7 +24,7 @@ namespace To_Do_List.Web.Controllers
             _api = api;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }

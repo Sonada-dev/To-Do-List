@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using RefitInterface;
@@ -15,31 +16,35 @@ builder.Services
     .AddRefitClient<IToDoApi>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7092/api"));
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<JWT>();
 
-//builder.Services.AddHttpClient("Api", client =>
+//builder.Services.AddAuthentication(options =>
 //{
-//    client.BaseAddress = new Uri("https://localhost:7092/api/");
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+//}).AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = false,
+//        ValidateIssuerSigningKey = true,
+//        ValidateAudience = false,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:KeyToken").Value!))
+//    };
 //});
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.LoginPath = "/Authorize/Login";
-        });
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.Cookie.Name = "JwtToken";
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//    options.Cookie.SameSite = SameSiteMode.Strict;
+//    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Установите срок действия куки по своему усмотрению
+//});
 
-builder.Services.AddAuthentication().AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateIssuerSigningKey = true,
-        ValidateAudience = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:KeyToken").Value!))
-    };
-});
-
-
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews();
 

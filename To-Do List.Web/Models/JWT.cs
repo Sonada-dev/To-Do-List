@@ -2,6 +2,19 @@
 {
     public class JWT
     {
-        public string token { get; set; } = string.Empty;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public JWT(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public string Token
+        {
+            get
+            {
+                return _httpContextAccessor.HttpContext?.Request.Cookies["JwtToken"] ?? string.Empty;
+            }
+            set { }
+        }
     }
 }

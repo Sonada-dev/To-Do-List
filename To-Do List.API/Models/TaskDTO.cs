@@ -9,10 +9,20 @@ namespace To_Do_List.API.Models
     {
         [BindNever]
         public Guid Id { get; set; }
+        [Required]
+        [Display(Name = "Название")]
         public string Title { get; set; } = string.Empty;
+        [Required]
+        [Display(Name = "Описание")]
         public string Description { get; set; } = string.Empty;
+        [Required]
+        [Display(Name = "Срок")]
         public DateTime Deadline { get; set; }
+        [Required]
+        [Display(Name = "Приоритет")]
         public string Priority { get; set; } = string.Empty;
+        [Required]
+        [Display(Name = "Статус")]
         public string Status { get; set; } = string.Empty;
     }
 

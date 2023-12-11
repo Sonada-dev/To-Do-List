@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Refit;
 using RefitInterface;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using To_Do_List.API.Models;
@@ -10,15 +12,11 @@ namespace To_Do_List.Web.Controllers
 {
     public class AuthorizeController : Controller
     {
-        //private readonly IHttpClientFactory _httpClientFactory;
-        //private readonly HttpClient _httpClient;
         private readonly IToDoApi _api;
         private readonly JWT _jwt;
 
-        public AuthorizeController(/*IHttpClientFactory httpClientFactory,*/ IToDoApi api, JWT jwt)
+        public AuthorizeController(IToDoApi api, JWT jwt, IHttpClientFactory httpClientFactory)
         {
-            //_httpClientFactory = httpClientFactory;
-            //_httpClient = _httpClientFactory.CreateClient("Api");
             _api = api;
             _jwt = jwt;
         }
@@ -30,31 +28,45 @@ namespace To_Do_List.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromForm] UserDTO request)
         {
             if (ModelState.IsValid)
             {
                 var token = await _api.Login(request);
 
-                _jwt.token = token;
-                return RedirectToAction("Index", "Home");
+                Response.Cookies.Append("JwtToken", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                });
+
+                _jwt.Token = token;
+
+                return RedirectToAction("Index", "Tasks");
             }
 
             return View(request);
-            
+        }
 
-            //if (ModelState.IsValid)
-            //{
-            //    var content = JsonSerializer.Serialize(request);
-            //    StringContent stringContent = new StringContent(content, Encoding.UTF8, "application/json");
-            //    HttpResponseMessage response = await _httpClient.PostAsync("login", stringContent);
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        return RedirectToAction("Index", "Home");
-            //    }
-            //}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
 
-            //return BadRequest();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([FromForm] UserDTO request)
+        {
+            if(!ModelState.IsValid)
+            {
+                var response = await _api.Register(request);
+                return RedirectToAction("Login", "Authorize");
+            }
+
+            return View(request);
         }
     }
 }
