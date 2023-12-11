@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "To-Do List.API", "To-Do List.API\To-Do List.API.csproj", "{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "To-Do List.API", "To-Do List.API\To-Do List.API.csproj", "{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "To-Do List.Web", "To-Do List.Web\To-Do List.Web.csproj", "{26415D4C-D497-45AA-9FF5-BDE52FC37701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefitInterface", "RefitInterface\RefitInterface.csproj", "{49687ECD-5E98-43DF-A5DC-9AB909AA84DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05ACB726-8CF2-4D3F-B9F6-BA3C387907BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26415D4C-D497-45AA-9FF5-BDE52FC37701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26415D4C-D497-45AA-9FF5-BDE52FC37701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26415D4C-D497-45AA-9FF5-BDE52FC37701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26415D4C-D497-45AA-9FF5-BDE52FC37701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49687ECD-5E98-43DF-A5DC-9AB909AA84DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49687ECD-5E98-43DF-A5DC-9AB909AA84DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49687ECD-5E98-43DF-A5DC-9AB909AA84DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49687ECD-5E98-43DF-A5DC-9AB909AA84DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

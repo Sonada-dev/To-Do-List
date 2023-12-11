@@ -14,9 +14,11 @@ namespace To_Do_List.API.Controllers
     {
         private readonly IAuthRepository _authRepository;
 
-        public AuthController(IAuthRepository authRepository) => _authRepository = authRepository;
+        public AuthController(IAuthRepository authRepository)
+        {
+            _authRepository = authRepository;
+        }
 
-        
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserDTO request)
         {
@@ -34,7 +36,16 @@ namespace To_Do_List.API.Controllers
             if (user is null)
                 return BadRequest("Invalid username or password.");
 
-            string token = _authRepository.CreateToken(user);
+            string? token = _authRepository.CreateToken(user) ?? null;
+
+            var refreshToken = _authRepository.GenerateRefreshToken();
+
+            if (token == null || refreshToken == null)
+                return BadRequest("Error JWT");
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, _authRepository.SetCookieOptionsForToken(refreshToken)!);
+
+            await _authRepository.SetRefreshToken(refreshToken, user.Id);
 
             return Ok(token);
         }

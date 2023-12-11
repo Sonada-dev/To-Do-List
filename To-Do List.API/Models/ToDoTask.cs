@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace To_Do_List.API.Models
 {
-    public class Task
+    public class ToDoTask
     {
-        public Task() => Id = Guid.NewGuid();
+        public ToDoTask() => Id = Guid.NewGuid();
 
         [Key]
         public Guid Id { get; set; }

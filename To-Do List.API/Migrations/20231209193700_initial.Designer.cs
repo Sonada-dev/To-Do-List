@@ -12,8 +12,8 @@ using To_Do_List.API.Data;
 namespace To_Do_List.API.Migrations
 {
     [DbContext(typeof(ApiDBContext))]
-    [Migration("20231204160953_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231209193700_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace To_Do_List.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("To_Do_List.API.Models.Task", b =>
+            modelBuilder.Entity("To_Do_List.API.Models.ToDoTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,10 +39,10 @@ namespace To_Do_List.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Priority")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -55,7 +55,7 @@ namespace To_Do_List.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("To_Do_List.API.Models.User", b =>
@@ -68,6 +68,16 @@ namespace To_Do_List.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
@@ -77,7 +87,7 @@ namespace To_Do_List.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("To_Do_List.API.Models.Task", b =>
+            modelBuilder.Entity("To_Do_List.API.Models.ToDoTask", b =>
                 {
                     b.HasOne("To_Do_List.API.Models.User", "User")
                         .WithMany("Tasks")

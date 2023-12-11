@@ -1,0 +1,80 @@
+﻿@using To_Do_List.API.Models
+@model IEnumerable<TaskDTO>
+
+@{
+    ViewData["Title"] = "Мои задачи";
+}
+
+
+<h2 class="mb-4 text-center">Мои задачи</h2>
+
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <button type="button" class="btn btn-primary mb-3 container-fluid" data-bs-toggle="modal" data-bs-target="#addTaskModal">Добавить задачу</button>
+            <a asp-action="Create" asp-controller="Tasks">Создать</a>
+            @*@await Html.PartialAsync("_AddTaskModal", new TaskDTO())*@
+            <button class="btn btn-primary mb-3 container-fluid" type="button" data-bs-toggle="collapse" data-bs-target="#filterFormCollapse" aria-expanded="false" aria-controls="filterFormCollapse">
+                Фильтры
+            </button>
+
+            <div class="collapse" id="filterFormCollapse">
+                <form id="filterForm" class="mb-4">
+                    <label for="statusFilter" class="form-label">Статус:</label>
+                    <select id="statusFilter" class="form-select mb-3">
+                        <option value="">Все</option>
+                        <option value="Не выполнено">Не выполнено</option>
+                        <option value="Выполнено">Выполнено</option>
+                    </select>
+
+                    <label for="priorityFilter" class="form-label">Приоритет:</label>
+                    <select id="priorityFilter" class="form-select mb-3">
+                        <option value="">Все</option>
+                        <option value="Низкий">Низкий</option>
+                        <option value="Средний">Средний</option>
+                        <option value="Высокий">Высокий</option>
+                    </select>
+
+                    <button type="button" class="btn btn-outline-primary container-fluid" onclick="applyFilters()">Применить</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row" id="taskList">
+                @foreach (var task in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div id="card" class="card">
+                            <div class="card-body text-center">
+                                <h3 class="card-title">@task.Title</h3>
+                                <p class="card-text">@task.Description</p>
+                                <ul class="list-group list-group-flush text-center">
+                                    <li class="list-group-item">Срок: @task.Deadline.ToString("yyyy-MM-dd HH:mm")</li>
+                                    @{
+                                        string priority = string.Empty;
+                                        switch (@task.Priority)
+                                        {
+                                            case "Низкий":
+                                                priority = "text-success";
+                                                break;
+                                            case "Средний":
+                                                priority = "text-warning";
+                                                break;
+                                            case "Высокий":
+                                                priority = "text-danger";
+                                                break;
+                                        }
+                                        var status = task.Status == "Не выполнено" ? "text-danger" : "text-success";
+                                    }
+                                    <li class="list-group-item">Приоритет: <span class="@priority">@task.Priority</span></li>
+                                    <li class="list-group-item">Статус: <span class="@status">@task.Status</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

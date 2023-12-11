@@ -30,10 +30,16 @@ namespace To_Do_List.API.Repository
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
                 if (user == null)
+                {
+                    _logger.LogInformation($"Authentication failed. User with username '{username}' not found.");
                     return null;
+                }
 
                 if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                {
+                    _logger.LogInformation($"Authentication failed. Incorrect password for user with username '{username}'.");
                     return null;
+                }
 
                 _logger.LogInformation($"User with username '{user.Username}' logged in successfully.");
                 return user;
@@ -45,8 +51,20 @@ namespace To_Do_List.API.Repository
             }
         }
 
-        public async Task<bool> IsUsernameUnique(string username) =>
-            !await _context.Users.AnyAsync(u => u.Username == username);
+        public async Task<bool> IsUsernameUnique(string username)
+        {
+            try
+            {
+                var isUnique = !await _context.Users.AnyAsync(u => u.Username == username);
+                _logger.LogInformation($"Checking uniqueness of username '{username}': {isUnique}");
+                return isUnique;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error checking uniqueness of username: {ex.Message}");
+                return false;
+            }
+        }
 
         public async Task<User?> Register(UserDTO user)
         {
@@ -74,26 +92,32 @@ namespace To_Do_List.API.Repository
             }
         }
 
-
-        public string CreateToken(User user) // TODO: Сделать рефреш токен и уменьшить время действия токена
+        public string? CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>
+            try
+            {
+                List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:KeyToken").Value!));
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:KeyToken").Value!));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: creds);
+                var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddMinutes(1), signingCredentials: creds);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+                var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return jwt;
+                return jwt;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error creating token: {ex.Message}");
+                return null;
+            }
         }
-
 
         public async Task<User?> GetUser(string id)
         {
@@ -123,6 +147,66 @@ namespace To_Do_List.API.Repository
             {
                 _logger.LogError($"Error while getting user with id {id}: {ex.Message}");
                 return null;
+            }
+        }
+
+        public RefreshToken? GenerateRefreshToken()
+        {
+            try
+            {
+                var refreshToken = new RefreshToken
+                {
+                    Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                    Exprires = DateTime.Now.AddDays(7)
+                };
+
+                return refreshToken;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error generating refresh token: {ex.Message}");
+                return null;
+            }
+        }
+
+        public CookieOptions? SetCookieOptionsForToken(RefreshToken refreshToken)
+        {
+            try
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshToken.Exprires,
+                };
+
+                return cookieOptions;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error setting cookie options: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task SetRefreshToken(RefreshToken refreshToken, Guid userId)
+        {
+            try
+            {
+                var user = await _context.Users.FirstAsync(x => x.Id == userId);
+
+                if (user != null)
+                {
+                    user.TokenCreated = refreshToken.Created.ToUniversalTime();
+                    user.TokenExpires = refreshToken.Exprires.ToUniversalTime();
+                    user.RefreshToken = refreshToken.Token;
+
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error setting refresh token: {ex.Message}");
             }
         }
     }

@@ -4,9 +4,11 @@ namespace To_Do_List.API.Repository
 {
     public interface ITasksRepository
     {
-        System.Threading.Tasks.Task<Models.Task> CreateTaskFromDTO(TaskDTO taskDTO, Guid userId);
-        System.Threading.Tasks.Task<List<Models.Task>> GetUserTasks(Guid userId);
-        System.Threading.Tasks.Task<bool> DeleteTask(Guid userId);
+        Task<bool> CreateTaskFromDTO(TaskDTO taskDTO, Guid userId);
+        Task<IEnumerable<TaskDTO>> GetUserTasks(Guid userId);
+        Task<TaskDTO?> GetUserTaskById(Guid taskId);
+        Task<bool> DeleteTask(Guid userId);
+        Task<bool> UpdateTask(Guid taskId, TaskDTO taskDTO);
 
     }
 }

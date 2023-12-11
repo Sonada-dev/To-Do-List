@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace To_Do_List.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,10 @@ namespace To_Do_List.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false)
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: false),
+                    TokenCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TokenExpires = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,22 +28,22 @@ namespace To_Do_List.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Task",
+                name: "Tasks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Deadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Priority = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Task", x => x.Id);
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Task_Users_UserId",
+                        name: "FK_Tasks_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -48,8 +51,8 @@ namespace To_Do_List.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task_UserId",
-                table: "Task",
+                name: "IX_Tasks_UserId",
+                table: "Tasks",
                 column: "UserId");
         }
 
@@ -57,7 +60,7 @@ namespace To_Do_List.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Task");
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -22,7 +22,7 @@ namespace To_Do_List.API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("To_Do_List.API.Models.Task", b =>
+            modelBuilder.Entity("To_Do_List.API.Models.ToDoTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace To_Do_List.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("To_Do_List.API.Models.User", b =>
@@ -65,6 +65,16 @@ namespace To_Do_List.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
@@ -74,7 +84,7 @@ namespace To_Do_List.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("To_Do_List.API.Models.Task", b =>
+            modelBuilder.Entity("To_Do_List.API.Models.ToDoTask", b =>
                 {
                     b.HasOne("To_Do_List.API.Models.User", "User")
                         .WithMany("Tasks")
