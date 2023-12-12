@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Refit;
-using RefitInterface;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,7 +14,7 @@ namespace To_Do_List.Web.Controllers
         private readonly IToDoApi _api;
         private readonly JWT _jwt;
 
-        public AuthorizeController(IToDoApi api, JWT jwt, IHttpClientFactory httpClientFactory)
+        public AuthorizeController(IToDoApi api, JWT jwt)
         {
             _api = api;
             _jwt = jwt;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RefitInterface;
 using System.Net;
 using System.Threading.Tasks;
 using To_Do_List.API.Models;

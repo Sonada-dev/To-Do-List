@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RefitInterface;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Net.Http;

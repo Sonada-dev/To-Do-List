@@ -15,8 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RefitInterface\RefitInterface.csproj" />
     <ProjectReference Include="..\To-Do List.API\To-Do List.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configuration\" />
   </ItemGroup>
 
 </Project>

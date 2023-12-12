@@ -3,6 +3,10 @@
     public class JWT
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        public JWT()
+        {
+            
+        }
         public JWT(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
