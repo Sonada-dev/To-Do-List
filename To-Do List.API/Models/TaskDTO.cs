@@ -9,19 +9,18 @@ namespace To_Do_List.API.Models
     {
         [BindNever]
         public Guid Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле"), MaxLength(16, ErrorMessage = "Максимум 16 символов")]
         [Display(Name = "Название")]
         public string Title { get; set; } = string.Empty;
-        [Required]
-        [Display(Name = "Описание")]
+        [Required(ErrorMessage = "Обязательное поле"), MaxLength(50, ErrorMessage = "Максимум 50 символов")]
         public string Description { get; set; } = string.Empty;
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Срок")]
         public DateTime Deadline { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Приоритет")]
         public string Priority { get; set; } = string.Empty;
-        [Required]
+        [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Статус")]
         public string Status { get; set; } = string.Empty;
     }

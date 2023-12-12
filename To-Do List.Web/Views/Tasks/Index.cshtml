@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Мои задачи";
+    var tasktocreate = ViewData["task"] ?? new TaskDTO();
 }
 
 
@@ -12,9 +13,8 @@
     <div class="row">
         <div class="col-md-3">
             <button type="button" class="btn btn-primary mb-3 container-fluid" data-bs-toggle="modal" data-bs-target="#addTaskModal">Добавить задачу</button>
-            @await Html.PartialAsync("_CreateTaskModal", new TaskDTO())
-
-            
+            @await Html.PartialAsync("_CreateTaskModal", tasktocreate)
+                
             <button class="btn btn-primary mb-3 container-fluid" type="button" data-bs-toggle="collapse" data-bs-target="#filterFormCollapse" aria-expanded="false" aria-controls="filterFormCollapse">
                 Фильтры
             </button>
@@ -43,57 +43,66 @@
 
         <div class="col-md-9">
             <div class="row" id="taskList">
-                @foreach (var task in Model)
-                {
-                    <div class="col-md-4 mb-4">
-                        <div id="card" class="card">
-                            <div class="card-body text-center d-flex flex-column justify-content-between">
-                                <h3 class="card-title">@task.Title</h3>
-                                <p class="card-text">@task.Description</p>
-                                <ul class="list-group list-group-flush text-center">
-                                    <li class="list-group-item">Срок: @task.Deadline.ToString("до dd MMMM yyyy HH:mm")</li>
-                                    @{
-                                        string priority = string.Empty;
-                                        switch (@task.Priority)
-                                        {
-                                            case "Низкий":
-                                                priority = "text-success";
-                                                break;
-                                            case "Средний":
-                                                priority = "text-warning";
-                                                break;
-                                            case "Высокий":
-                                                priority = "text-danger";
-                                                break;
+                    @foreach (var task in Model)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div id="card" class="card">
+                                <div class="card-body text-center d-flex flex-column justify-content-between">
+                                    <h3 class="card-title">@task.Title</h3>
+                                    <p class="card-text">@task.Description</p>
+                                    <ul class="list-group list-group-flush text-center">
+                                        <li class="list-group-item">Срок: @task.Deadline.ToString("до dd MMMM yyyy HH:mm")</li>
+                                        @{
+                                            string priority = string.Empty;
+                                            switch (@task.Priority)
+                                            {
+                                                case "Низкий":
+                                                    priority = "text-success";
+                                                    break;
+                                                case "Средний":
+                                                    priority = "text-warning";
+                                                    break;
+                                                case "Высокий":
+                                                    priority = "text-danger";
+                                                    break;
+                                            }
+                                            var status = task.Status == "Не выполнено" ? "text-danger" : "text-success";
                                         }
-                                        var status = task.Status == "Не выполнено" ? "text-danger" : "text-success";
-                                    }
-                                    <li class="list-group-item">Приоритет: <span class="@priority">@task.Priority</span></li>
-                                    <li class="list-group-item">Статус: <span class="@status">@task.Status</span></li>
-                                </ul>
+                                        <li class="list-group-item">Приоритет: <span class="@priority">@task.Priority</span></li>
+                                        <li class="list-group-item">Статус: <span class="@status">@task.Status</span></li>
+                                    </ul>
 
-                                <div class="btn-group mt-auto">
-                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="cuurentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                        </svg>
-                                    </button>
-                                    @await Html.PartialAsync("_EditTaskModal", task)
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                        </svg>
-                                    </button>
-                                    @await Html.PartialAsync("_DeleteTaskModal", task.Id.ToString())
+                                    <div class="btn-group mt-auto">
+                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal-@task.Id">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="cuurentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                            </svg>
+                                        </button>
+                                        @await Html.PartialAsync("_EditTaskModal", task)
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal-@task.Id">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                            </svg>
+                                        </button>
+                                        @await Html.PartialAsync("_DeleteTaskModal", task.Id.ToString())
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                }
+                    }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script type="text/javascript">
+        function OnComplete() {
+            $("#exampleModal").modal("hide");
+        }
+    </script>
+}
 

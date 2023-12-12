@@ -14,6 +14,7 @@ namespace To_Do_List.API.Controllers
 {
     [Route("api/")]
     [ApiController]
+    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly ITasksRepository _tasksRepository;
@@ -23,11 +24,10 @@ namespace To_Do_List.API.Controllers
             _tasksRepository = tasksRepository;
         }
 
-        [Authorize]
         [HttpPost("tasks")]
         public async Task<IActionResult> CreateTask([FromBody]TaskDTO taskDTO)
         {
-            var userId = Guid.Parse("52c201b7-0afe-4766-bbf1-d54fae3044c4");//Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var task = await _tasksRepository.CreateTaskFromDTO(taskDTO, userId);
             if(!task)
                 return BadRequest();
@@ -35,11 +35,10 @@ namespace To_Do_List.API.Controllers
             return Ok(task);
         }
 
-        [Authorize]
         [HttpGet("tasks")]
         public async Task<IActionResult> GetTasks()
         {
-            var userId = Guid.Parse("52c201b7-0afe-4766-bbf1-d54fae3044c4"); //Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var tasks = await _tasksRepository.GetUserTasks(userId);
             if (tasks == null)
                 return NotFound();
@@ -47,7 +46,6 @@ namespace To_Do_List.API.Controllers
             return Ok(tasks);
         }
 
-        [Authorize]
         [HttpDelete("tasks/{id}")]
         public async Task<IActionResult> DeleteTask(string id)
         {
@@ -60,7 +58,6 @@ namespace To_Do_List.API.Controllers
             return NotFound();
         }
 
-        [Authorize]
         [HttpPut("tasks")]
         public async Task<IActionResult> UpdateTask(string id, [FromBody] TaskDTO taskDTO)
         {
@@ -73,7 +70,6 @@ namespace To_Do_List.API.Controllers
             return BadRequest();
         }
 
-        [Authorize]
         [HttpGet("tasks/{id}")]
         public async Task<IActionResult> GetTaskById(string id)
         {

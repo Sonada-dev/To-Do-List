@@ -9,16 +9,11 @@ using To_Do_List.Web.Models;
 
 namespace To_Do_List.Web.Controllers
 {
-    public class AuthorizeController : Controller
+    public class AccountController : Controller
     {
         private readonly IToDoApi _api;
-        private readonly JWT _jwt;
 
-        public AuthorizeController(IToDoApi api, JWT jwt)
-        {
-            _api = api;
-            _jwt = jwt;
-        }
+        public AccountController(IToDoApi api) => _api = api;
 
         [HttpGet]
         public IActionResult Login()
@@ -33,6 +28,8 @@ namespace To_Do_List.Web.Controllers
             if (ModelState.IsValid)
             {
                 var token = await _api.Login(request);
+                if(token == null)
+                    return View(request);
 
                 Response.Cookies.Append("JwtToken", token, new CookieOptions
                 {
@@ -40,8 +37,6 @@ namespace To_Do_List.Web.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.Strict
                 });
-
-                _jwt.Token = token;
 
                 return RedirectToAction("Index", "Tasks");
             }
@@ -59,13 +54,20 @@ namespace To_Do_List.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromForm] UserDTO request)
         {
-            if(!ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 var response = await _api.Register(request);
-                return RedirectToAction("Login", "Authorize");
+                return RedirectToAction("Login", "Account");
             }
 
             return View(request);
+        }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("JwtToken");
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

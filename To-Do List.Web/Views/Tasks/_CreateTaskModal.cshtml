@@ -1,15 +1,15 @@
 ﻿@using To_Do_List.API.Models
 @model TaskDTO
 
-<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTaskModalLabel">Добавить задачу</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="Create">
+<form asp-action="Create" data-ajax-method="POST" data-ajax="true" data-ajax-update="modalbody" data-ajax-complete="OnComplete">
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTaskModalLabel">Добавить задачу</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalbody">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="mb-3">
                         <label asp-for="Title" class="form-label"></label>
@@ -33,7 +33,6 @@
                             <option value="Средний">Средний</option>
                             <option value="Высокий">Высокий</option>
                         </select>
-                        <span asp-validation-for="Priority" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for=Status class="form-label"></label>
@@ -41,11 +40,12 @@
                             <option value="Не выполнено">Не выполнено</option>
                             <option value="Выполнено">Выполнено</option>
                         </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
+                </div>
+                <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Добавить задачу</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>

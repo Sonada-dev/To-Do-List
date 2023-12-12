@@ -13,14 +13,10 @@ namespace To_Do_List.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly JWT _jwt;
-        private readonly IToDoApi _api;
 
-        public HomeController(ILogger<HomeController> logger, JWT jwt, IToDoApi api)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _jwt = jwt;
-            _api = api;
         }
 
         public IActionResult Index()

@@ -8,38 +8,38 @@ using To_Do_List.Web.Models;
 
 namespace To_Do_List.Web.Controllers
 {
+    [Authorize]
     public class TasksController : Controller
     {
         private readonly IToDoApi _api;
-        private readonly JWT _jwt;
 
-        public TasksController(IToDoApi api, JWT jwt)
-        {
-            _api = api;
-            _jwt = jwt;
-        }
+        public TasksController(IToDoApi api) => _api = api;
 
-        public async Task<IActionResult> Index()
+
+        public async Task<IActionResult> Index(TaskDTO? task = null)
         {
-            var response = await _api.GetTasks(_jwt.Token);
+            var response = await _api.GetTasks(Request.Headers.Authorization.ToString().Split()[1]);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
-                return RedirectToAction("Login", "Authorize");
+                return RedirectToAction("Login", "Account");
             else if (!response.IsSuccessStatusCode)
                 return NotFound();
+
+            ViewData["task"] = task;
 
             return View(response.Content);
         }
 
-        [HttpPost("{controller}/Create")]
+        [HttpPost("Create")]
+        [ActionName("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTask([FromForm] TaskDTO task)
         {
             if (ModelState.IsValid)
             {
-                var response = await _api.CreateTask(task, _jwt.Token);
+                var response = await _api.CreateTask(task, Request.Headers.Authorization.ToString().Split()[1]);
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    return RedirectToAction("Login", "Authorize");
+                    return RedirectToAction("Login", "Account");
                 else if (!response.IsSuccessStatusCode)
                     return BadRequest();
             }
@@ -51,9 +51,9 @@ namespace To_Do_List.Web.Controllers
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteTask(string id)
         {
-            var response = await _api.DeleteTask(id, _jwt.Token);
+            var response = await _api.DeleteTask(id, Request.Headers.Authorization.ToString().Split()[1]);
             if (response.StatusCode == HttpStatusCode.Unauthorized)
-                return RedirectToAction("Login", "Authorize");
+                return RedirectToAction("Login", "Account");
             else if (!response.IsSuccessStatusCode)
                 return BadRequest();
 
@@ -64,9 +64,9 @@ namespace To_Do_List.Web.Controllers
         [ActionName("Edit")]
         public async Task<IActionResult> EditTask(string id, [FromForm] TaskDTO task)
         {
-            var response = await _api.EditTask(id, task, _jwt.Token);
+            var response = await _api.EditTask(id, task, Request.Headers.Authorization.ToString().Split()[1]);
             if (response.StatusCode == HttpStatusCode.Unauthorized)
-                return RedirectToAction("Login", "Authorize");
+                return RedirectToAction("Login", "Account");
             else if (!response.IsSuccessStatusCode)
                 return BadRequest();
 

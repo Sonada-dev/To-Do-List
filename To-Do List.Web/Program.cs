@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using System.Text;
-using To_Do_List.API.Repository;
 using To_Do_List.Web;
 using To_Do_List.Web.Models;
 
@@ -13,41 +11,38 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddRefitClient<IToDoApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://localhost:7092/api"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://172.27.107.88/api"));
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<JWT>();
 
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = false,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:KeyToken").Value!))
+        };
+    });
 
-//}).AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = false,
-//        ValidateIssuerSigningKey = true,
-//        ValidateAudience = false,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:KeyToken").Value!))
-//    };
-//});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "Account/Login";
+});
 
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.Cookie.Name = "JwtToken";
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-//    options.Cookie.SameSite = SameSiteMode.Strict;
-//    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Установите срок действия куки по своему усмотрению
-//});
-
-builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Cookies.TryGetValue("JwtToken", out string? token))
+        context.Request.Headers.Authorization = $"Bearer {token}";
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -68,5 +63,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();
